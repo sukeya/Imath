@@ -631,7 +631,7 @@ public:
     /// Invert in place using the determinant.
     /// @param singExc If true, throw an exception if the matrix cannot be inverted.
     /// @return const reference to this
-    IMATH_CONSTEXPR14 const Matrix33& invert (bool singExc);
+    IMATH_HOSTDEVICE IMATH_CONSTEXPR14 const Matrix33& invert (bool singExc);
 
     /// Invert in place using the determinant.
     /// @return const reference to this

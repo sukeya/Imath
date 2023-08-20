@@ -8,11 +8,15 @@
 #endif
 
 #include "testVec.h"
+#include "testVecCUDA.h"
 #include <ImathFun.h>
 #include <ImathVec.h>
+#include <ImathRandom.h>
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <iostream>
+#include <random>
 
 // Include ImathForward *after* other headers to validate forward declarations
 #include <ImathForward.h>
@@ -248,6 +252,59 @@ testLength4T ()
     assert (IMATH_INTERNAL_NAMESPACE::equal (v.normalized ().length (), 1, e));
 }
 
+void testVecCUDAPerfomance()
+{
+    using std::chrono::system_clock;
+    auto times = 20;
+
+    std::size_t num = 1e6;
+    auto ins = std::vector<HostPolyMesh>();
+    auto out = HostPolyMesh{
+        typename HostPolyMesh::Points(num, typename HostPolyMesh::Point()),
+        typename HostPolyMesh::Normals(num, typename HostPolyMesh::Normal())
+    };
+    auto mats = std::vector<Matrix44<float>>();
+
+    for (std::size_t time = 0; time < times; ++time)
+    {
+        auto in = HostPolyMesh();
+        auto rand = Rand48(time);
+        for (std::size_t i = 0; i < num; ++i)
+        {
+            in.points.push_back(hollowSphereRand<typename HostPolyMesh::Point>(rand));
+        }
+        in.normals = in.points;
+        ins.push_back(in);
+
+        auto mat = Matrix44<float>();
+        for (std::size_t i = 0; i < 4; ++i)
+        {
+            for (std::size_t j = 0; j < 4; ++j)
+            {
+                mat.x[i][j] = Imath::drand48();
+            }
+        }
+        mats.push_back(mat);
+    }
+
+
+    int sum = 0;
+    system_clock::time_point start = system_clock::now();
+    for (std::size_t time = 0; time < times; ++time)
+    {
+        system_clock::time_point cuda_start = system_clock::now();
+        testVecCUDA(ins.at(time), mats.at(time), out);
+        system_clock::time_point cuda_end = system_clock::now();
+
+        sum += std::chrono::duration_cast<std::chrono::microseconds>(cuda_end - cuda_start).count();
+        std::cout << sum << '\n';
+    }
+    system_clock::time_point end = system_clock::now();
+
+    std::cout << "calculation time[microseconds]: " << static_cast<double>(sum) / times << '\n';
+    std::cout << "total time[microseconds]: " << std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << '\n';
+}
+
 } // namespace
 
 void
@@ -261,6 +318,7 @@ testVec ()
     testLength3T<double> ();
     testLength4T<float> ();
     testLength4T<double> ();
+    testVecCUDAPerfomance();
 
     cout << "ok\n" << endl;
 }

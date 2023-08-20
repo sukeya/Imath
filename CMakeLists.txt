@@ -14,7 +14,7 @@ endif()
 
 # Imath version
 
-project(Imath VERSION 3.2.0 LANGUAGES C CXX)
+project(Imath VERSION 3.2.0 LANGUAGES C CXX CUDA)
 
 set(IMATH_VERSION_RELEASE_TYPE "-dev" CACHE STRING "Extra version tag string for Imath build, such as -dev, -beta1, etc.")
 
@@ -92,6 +92,7 @@ endif()
 include(CTest)
 if(BUILD_TESTING AND NOT IMATH_IS_SUBPROJECT)
   enable_testing()
+  add_subdirectory(thrust)
   add_subdirectory(src/ImathTest)
 endif()
 

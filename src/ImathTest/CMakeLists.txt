@@ -11,6 +11,34 @@ if("${CMAKE_PROJECT_NAME}" STREQUAL "")
   find_package(Imath)
 endif()
 
+set(CMAKE_CUDA_ARCHITECTURES 75)
+enable_language(CUDA)
+
+add_library(ImathTestVecCuda
+  testVecCUDA.h
+  testVecCUDA.cu
+)
+
+find_package(CUDAToolkit 12 REQUIRED)
+
+find_package(Thrust REQUIRED CONFIG)
+#thrust_create_target(Thrust)
+thrust_create_target(Thrust DEVICE TBB)
+
+target_compile_features(ImathTestVecCuda PRIVATE cuda_std_20)
+# Disable SIMD and enable device lambda expression.
+target_compile_options(
+  ImathTestVecCuda
+  PUBLIC
+    "$<$<COMPILE_LANGUAGE:CUDA>:-expt-extended-lambda>"
+    "$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-fno-tree-vectorize>"
+    "$<$<COMPILE_LANG_AND_ID:CXX,Clang>:-fno-vectorize>"
+)
+target_link_libraries(ImathTestVecCuda PUBLIC CUDA::cudart Imath::Imath Thrust)
+set_target_properties(ImathTestVecCuda PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
 add_executable(ImathTest 
   main.cpp
   testBox.cpp
@@ -48,7 +76,7 @@ add_executable(ImathTest
   testNoInterop.cpp
 )
 
-target_link_libraries(ImathTest Imath::Imath)
+target_link_libraries(ImathTest Imath::Imath ImathTestVecCuda)
 set_target_properties(ImathTest PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
   )
