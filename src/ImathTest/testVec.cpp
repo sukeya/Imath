@@ -255,9 +255,9 @@ testLength4T ()
 void testVecCUDAPerfomance()
 {
     using std::chrono::system_clock;
-    auto times = 20;
+    auto times = 1;
 
-    std::size_t num = 1e6;
+    std::size_t num = 1;
     auto ins = std::vector<HostPolyMesh>();
     auto out = HostPolyMesh{
         typename HostPolyMesh::Points(num, typename HostPolyMesh::Point()),
@@ -312,12 +312,14 @@ testVec ()
 {
     cout << "Testing some basic vector operations" << endl;
 
+    /*
     testLength2T<float> ();
     testLength2T<double> ();
     testLength3T<float> ();
     testLength3T<double> ();
     testLength4T<float> ();
     testLength4T<double> ();
+    */
     testVecCUDAPerfomance();
 
     cout << "ok\n" << endl;

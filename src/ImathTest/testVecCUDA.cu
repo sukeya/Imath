@@ -112,15 +112,14 @@ void testVecCUDA(
   // Device-side PolyMesh storing a transformed PolyMesh.
   auto device_poly_mesh = DevicePolyMesh();
 
-  /*
   thrust::copy(
     host_poly_mesh.points.cbegin(),
     host_poly_mesh.points.cend(),
     device_poly_mesh.points.begin()
   );
   thrust::copy(
-    host_poly_mesh.normals.begin(),
-    host_poly_mesh.normals.end(),
+    host_poly_mesh.normals.cbegin(),
+    host_poly_mesh.normals.cend(),
     device_poly_mesh.normals.begin()
   );
 
@@ -147,14 +146,13 @@ void testVecCUDA(
 
   // Set result.
   thrust::copy(
-    device_poly_mesh.points.begin(),
-    device_poly_mesh.points.end(),
+    device_poly_mesh.points.cbegin(),
+    device_poly_mesh.points.cend(),
     xformed_poly_mesh.points.begin()
   );
   thrust::copy(
-    device_poly_mesh.normals.begin(),
-    device_poly_mesh.normals.end(),
+    device_poly_mesh.normals.cbegin(),
+    device_poly_mesh.normals.cend(),
     xformed_poly_mesh.normals.begin()
   );
-  */
 }

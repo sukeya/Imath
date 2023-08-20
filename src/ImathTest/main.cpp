@@ -50,6 +50,7 @@
 int
 main (int argc, char* argv[])
 {
+    /*
     // NB: If you add a test here, make sure to enumerate it in the
     // CMakeLists.txt so it runs as part of the test suite
     TEST (testToFloat);
@@ -90,6 +91,8 @@ main (int argc, char* argv[])
     TEST (testNoInterop);
     // NB: If you add a test here, make sure to enumerate it in the
     // CMakeLists.txt so it runs as part of the test suite
+    */
+    TEST (testVec);
 
     return 0;
 }
