@@ -110,8 +110,11 @@ void testVecCUDA(
   using Normal = typename HostPolyMesh::Normal;
 
   // Device-side PolyMesh storing a transformed PolyMesh.
-  auto device_poly_mesh = DevicePolyMesh();
-
+  auto device_poly_mesh = DevicePolyMesh{
+    typename DevicePolyMesh::Points(host_poly_mesh.points.size(), typename DevicePolyMesh::Point()),
+    typename DevicePolyMesh::Normals(host_poly_mesh.normals.size(), typename DevicePolyMesh::Normal())
+  };
+  
   thrust::copy(
     host_poly_mesh.points.cbegin(),
     host_poly_mesh.points.cend(),

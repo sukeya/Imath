@@ -255,9 +255,9 @@ testLength4T ()
 void testVecCUDAPerfomance()
 {
     using std::chrono::system_clock;
-    auto times = 1;
+    auto times = 10;
 
-    std::size_t num = 1;
+    std::size_t num = 1e6;
     auto ins = std::vector<HostPolyMesh>();
     auto out = HostPolyMesh{
         typename HostPolyMesh::Points(num, typename HostPolyMesh::Point()),
@@ -302,7 +302,7 @@ void testVecCUDAPerfomance()
     system_clock::time_point end = system_clock::now();
 
     std::cout << "calculation time[microseconds]: " << static_cast<double>(sum) / times << '\n';
-    std::cout << "total time[microseconds]: " << std::chrono::duration_cast<std::chrono::seconds>(end - start).count() << '\n';
+    std::cout << "total time[milliseconds]: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n';
 }
 
 } // namespace
