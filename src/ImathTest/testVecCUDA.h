@@ -26,14 +26,6 @@ using ImathPolyMesh = PolyMesh<Imath::Vec3<float>, Imath::Vec3<float>, C>;
 
 using HostPolyMesh = ImathPolyMesh<thrust::host_vector>;
 
-/*
-thrust::device_event testVecCUDA(
-  const HostPolyMesh& host_poly_mesh,
-  const Imath::Matrix44<float>& xform_matrix,
-  HostPolyMesh& xformed_poly_mesh
-);
-*/
-
 
 void testVecCUDA(
   const HostPolyMesh& host_poly_mesh,
