@@ -266,42 +266,37 @@ void testVecCUDAPerfomance()
     auto mats = std::vector<Matrix44<float>>();
 
     for (std::size_t time = 0; time < times; ++time)
-    {
+                {
         auto in = HostPolyMesh();
         auto rand = Rand48(time);
-        for (std::size_t i = 0; i < num; ++i)
-        {
+                for (std::size_t i = 0; i < num; ++i)
+                {
             in.points.push_back(hollowSphereRand<typename HostPolyMesh::Point>(rand));
-        }
+                }
         in.normals = in.points;
         ins.push_back(in);
 
         auto mat = Matrix44<float>();
-        for (std::size_t i = 0; i < 4; ++i)
-        {
-            for (std::size_t j = 0; j < 4; ++j)
-            {
-                mat.x[i][j] = Imath::drand48();
-            }
-        }
+                for (std::size_t i = 0; i < 4; ++i)
+                {
+                    for (std::size_t j = 0; j < 4; ++j)
+                    {
+                        mat.x[i][j] = Imath::drand48();
+                    }
+                }
         mats.push_back(mat);
-    }
+        }
 
 
-    int sum = 0;
     system_clock::time_point start = system_clock::now();
     for (std::size_t time = 0; time < times; ++time)
     {
-        system_clock::time_point cuda_start = system_clock::now();
         testVecCUDA(ins.at(time), mats.at(time), out);
-        system_clock::time_point cuda_end = system_clock::now();
-
-        sum += std::chrono::duration_cast<std::chrono::microseconds>(cuda_end - cuda_start).count();
-        std::cout << sum << '\n';
     }
     system_clock::time_point end = system_clock::now();
 
-    std::cout << "calculation time[microseconds]: " << static_cast<double>(sum) / times << '\n';
+    std::cout << "times: " << times << '\n';
+    std::cout << "size of vector: " << num << '\n';
     std::cout << "total time[milliseconds]: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << '\n';
 }
 

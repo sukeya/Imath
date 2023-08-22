@@ -23,7 +23,6 @@ find_package(CUDAToolkit 12 REQUIRED)
 
 find_package(Thrust REQUIRED CONFIG)
 thrust_create_target(Thrust)
-#thrust_create_target(Thrust DEVICE TBB)
 
 target_compile_features(ImathTestVecCuda PRIVATE cuda_std_20)
 # Disable SIMD and enable device lambda expression.
