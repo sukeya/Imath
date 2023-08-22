@@ -266,26 +266,26 @@ void testVecCUDAPerfomance()
     auto mats = std::vector<Matrix44<float>>();
 
     for (std::size_t time = 0; time < times; ++time)
-                {
+    {
         auto in = HostPolyMesh();
         auto rand = Rand48(time);
-                for (std::size_t i = 0; i < num; ++i)
-                {
+        for (std::size_t i = 0; i < num; ++i)
+        {
             in.points.push_back(hollowSphereRand<typename HostPolyMesh::Point>(rand));
-                }
+        }
         in.normals = in.points;
         ins.push_back(in);
 
         auto mat = Matrix44<float>();
-                for (std::size_t i = 0; i < 4; ++i)
-                {
-                    for (std::size_t j = 0; j < 4; ++j)
-                    {
-                        mat.x[i][j] = Imath::drand48();
-                    }
-                }
-        mats.push_back(mat);
+        for (std::size_t i = 0; i < 4; ++i)
+        {
+            for (std::size_t j = 0; j < 4; ++j)
+            {
+                mat.x[i][j] = Imath::drand48();
+            }
         }
+        mats.push_back(mat);
+    }
 
 
     system_clock::time_point start = system_clock::now();
