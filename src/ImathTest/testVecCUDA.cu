@@ -29,6 +29,31 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 
 using DevicePolyMesh = ImathPolyMesh<thrust::device_vector>;
 
+
+template <class T>
+struct V_multiplies_M
+{
+  using Matrix = Imath::Matrix44<float>;
+
+  explicit V_multiplies_M(const Matrix& m) : m_(m) {}
+
+  V_multiplies_M() = default;
+  V_multiplies_M(const V_multiplies_M&) = default;
+  V_multiplies_M& operator=(const V_multiplies_M&) = default;
+  V_multiplies_M(V_multiplies_M&&) = default;
+  V_multiplies_M& operator=(V_multiplies_M&&) = default;
+  ~V_multiplies_M() = default;
+
+  __host__ __device__ constexpr T operator()(const T& p) const
+  {
+    return p * m_;
+  }
+
+private:
+  Matrix m_;
+};
+
+
 /*
 thrust::device_event testVecCUDA(
   const HostPolyMesh& host_poly_mesh,
@@ -63,10 +88,7 @@ thrust::device_event testVecCUDA(
     device_poly_mesh.points.begin(),
     device_poly_mesh.points.end(),
     device_poly_mesh.points.begin(),
-    [xform_matrix] __device__ (const Point& p) -> Point
-    {
-      return p * xform_matrix;
-    }
+    V_multiplies_M<Point>(xform_matrix)
   );
   auto transforming_normals = thrust::async::transform
   (
@@ -74,10 +96,7 @@ thrust::device_event testVecCUDA(
     device_poly_mesh.normals.begin(),
     device_poly_mesh.normals.end(),
     device_poly_mesh.normals.begin(),
-    [xform_matrix] __device__ (const Normal& n) -> Normal
-    {
-      return n * xform_matrix;
-    }
+    V_multiplies_M<Normal>(xform_matrix)
   );
 
   // Set result.
@@ -99,6 +118,7 @@ thrust::device_event testVecCUDA(
   return thrust::when_all(copying_points_from_device_to_host, copying_normals_from_device_to_host);
 }
 */
+
 
 void testVecCUDA(
   const HostPolyMesh& host_poly_mesh,
@@ -131,20 +151,14 @@ void testVecCUDA(
     device_poly_mesh.points.begin(),
     device_poly_mesh.points.end(),
     device_poly_mesh.points.begin(),
-    [xform_matrix] __device__ (const Point& p) -> Point
-    {
-      return p * xform_matrix;
-    }
+    V_multiplies_M<Point>(xform_matrix)
   );
   thrust::transform
   (
     device_poly_mesh.normals.begin(),
     device_poly_mesh.normals.end(),
     device_poly_mesh.normals.begin(),
-    [xform_matrix] __device__ (const Normal& n) -> Normal
-    {
-      return n * xform_matrix;
-    }
+    V_multiplies_M<Normal>(xform_matrix)
   );
 
   // Set result.
