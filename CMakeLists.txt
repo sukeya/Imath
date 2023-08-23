@@ -92,7 +92,6 @@ endif()
 include(CTest)
 if(BUILD_TESTING AND NOT IMATH_IS_SUBPROJECT)
   enable_testing()
-  add_subdirectory(thrust)
   add_subdirectory(src/ImathTest)
 endif()
 

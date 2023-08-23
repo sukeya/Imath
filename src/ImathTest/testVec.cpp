@@ -18,6 +18,8 @@
 #include <iostream>
 #include <random>
 
+#include <oneapi/tbb.h>
+
 // Include ImathForward *after* other headers to validate forward declarations
 #include <ImathForward.h>
 
@@ -293,7 +295,26 @@ void testVecCUDAPerfomance()
     system_clock::time_point start = system_clock::now();
     for (std::size_t time = 0; time < times; ++time)
     {
-        testVecCUDA(ins.at(time), mats.at(time), out);
+        oneapi::tbb::parallel_for(
+            oneapi::tbb::blocked_range<std::size_t>(0, num),
+            [&mat = mats.at(time), &in = ins.at(time), &out](const oneapi::tbb::blocked_range<std::size_t>& range)
+            {
+                for(auto r = range.begin(); r != range.end(); ++r)
+                {
+                    out.points[r] = in.points[r] * mat;
+                }
+            }
+        );
+        oneapi::tbb::parallel_for(
+            oneapi::tbb::blocked_range<std::size_t>(0, num),
+            [&mat = mats.at(time), &in = ins.at(time), &out](const oneapi::tbb::blocked_range<std::size_t>& range)
+            {
+                for(auto r = range.begin(); r != range.end(); ++r)
+                {
+                    out.normals[r] = in.normals[r] * mat;
+                }
+            }
+        );
     }
     system_clock::time_point end = system_clock::now();
 

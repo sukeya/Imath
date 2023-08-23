@@ -4,7 +4,7 @@
 //
 #include <ImathVec.h>
 #include <ImathMatrix.h>
-#include <thrust/host_vector.h>
+#include <vector>
 
 template <class PointType, class NormalType, template<class> class ContainerType>
 struct PolyMesh
@@ -25,13 +25,6 @@ template <template<class> class C>
 using ImathPolyMesh = PolyMesh<Imath::Vec3<float>, Imath::Vec3<float>, C>;
 
 template <class C>
-using std_host_vector = thrust::host_vector<C>;
+using std_host_vector = std::vector<C>;
 
 using HostPolyMesh = ImathPolyMesh<std_host_vector>;
-
-
-void testVecCUDA(
-  const HostPolyMesh& host_poly_mesh,
-  const Imath::Matrix44<float>& xform_matrix,
-  HostPolyMesh& xformed_poly_mesh
-);
