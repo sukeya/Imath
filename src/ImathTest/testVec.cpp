@@ -259,11 +259,13 @@ void testVecCUDAPerfomance()
 
     std::size_t num = 1e6;
     auto ins = std::vector<HostPolyMesh>();
+    ins.reserve(num);
     auto out = HostPolyMesh{
         typename HostPolyMesh::Points(num, typename HostPolyMesh::Point()),
         typename HostPolyMesh::Normals(num, typename HostPolyMesh::Normal())
     };
     auto mats = std::vector<Matrix44<float>>();
+    mats.reserve(num);
 
     for (std::size_t time = 0; time < times; ++time)
     {
