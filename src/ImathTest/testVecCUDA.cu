@@ -12,8 +12,8 @@
 #include <ImathVec.h>
 #include <ImathMatrix.h>
 
-#include <thrust/transform.h>
-#include <thrust/copy.h>
+#include <thrust/async/transform.h>
+#include <thrust/async/copy.h>
 #include <thrust/device_vector.h>
 #include <thrust/iterator/zip_iterator.h>
 #include <thrust/tuple.h>
@@ -50,7 +50,7 @@ private:
 };
 
 
-void testVecCUDA(
+thrust::device_event testVecCUDA(
   const HostPolyMesh& host_poly_mesh,
   const Imath::Matrix44<float>& xform_matrix,
   HostPolyMesh& xformed_poly_mesh
@@ -64,27 +64,33 @@ void testVecCUDA(
     typename DevicePolyMesh::Points(host_poly_mesh.points.size(), typename DevicePolyMesh::Point()),
     typename DevicePolyMesh::Normals(host_poly_mesh.normals.size(), typename DevicePolyMesh::Normal())
   };
-  
-  thrust::copy(
-    host_poly_mesh.points.cbegin(),
-    host_poly_mesh.points.cend(),
+
+  auto copying_points_from_host_to_device = thrust::async::copy(
+    thrust::host,
+    thrust::device,
+    host_poly_mesh.points.begin(),
+    host_poly_mesh.points.end(),
     device_poly_mesh.points.begin()
   );
-  thrust::copy(
-    host_poly_mesh.normals.cbegin(),
-    host_poly_mesh.normals.cend(),
+  auto copying_normals_from_host_to_device = thrust::async::copy(
+    thrust::host,
+    thrust::device,
+    host_poly_mesh.normals.begin(),
+    host_poly_mesh.normals.end(),
     device_poly_mesh.normals.begin()
   );
 
-  thrust::transform
+  auto transforming_points = thrust::async::transform
   (
+    thrust::device.after(copying_points_from_host_to_device),
     device_poly_mesh.points.begin(),
     device_poly_mesh.points.end(),
     device_poly_mesh.points.begin(),
     V_multiplies_M<Point>(xform_matrix)
   );
-  thrust::transform
+  auto transforming_normals = thrust::async::transform
   (
+    thrust::device.after(copying_normals_from_host_to_device),
     device_poly_mesh.normals.begin(),
     device_poly_mesh.normals.end(),
     device_poly_mesh.normals.begin(),
@@ -92,14 +98,20 @@ void testVecCUDA(
   );
 
   // Set result.
-  thrust::copy(
-    device_poly_mesh.points.cbegin(),
-    device_poly_mesh.points.cend(),
+  auto copying_points_from_device_to_host = thrust::async::copy(
+    thrust::device.after(transforming_points),
+    thrust::host,
+    device_poly_mesh.points.begin(),
+    device_poly_mesh.points.end(),
     xformed_poly_mesh.points.begin()
   );
-  thrust::copy(
-    device_poly_mesh.normals.cbegin(),
-    device_poly_mesh.normals.cend(),
+  auto copying_normals_from_device_to_host = thrust::async::copy(
+    thrust::device.after(transforming_normals),
+    thrust::host,
+    device_poly_mesh.normals.begin(),
+    device_poly_mesh.normals.end(),
     xformed_poly_mesh.normals.begin()
   );
+
+  return thrust::when_all(copying_points_from_device_to_host, copying_normals_from_device_to_host);
 }

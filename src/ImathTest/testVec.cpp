@@ -290,10 +290,15 @@ void testVecCUDAPerfomance()
     }
 
 
+    auto events = std::vector<thrust::device_event>();
     system_clock::time_point start = system_clock::now();
     for (std::size_t time = 0; time < times; ++time)
     {
-        testVecCUDA(ins.at(time), mats.at(time), out);
+        events.push_back(testVecCUDA(ins.at(time), mats.at(time), out));
+    }
+    for (auto& event : events)
+    {
+        event.wait();
     }
     system_clock::time_point end = system_clock::now();
 
