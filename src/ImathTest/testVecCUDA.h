@@ -24,7 +24,10 @@ struct PolyMesh
 template <template<class> class C>
 using ImathPolyMesh = PolyMesh<Imath::Vec3<float>, Imath::Vec3<float>, C>;
 
-using HostPolyMesh = ImathPolyMesh<thrust::host_vector>;
+template <class C>
+using std_host_vector = thrust::host_vector<C>;
+
+using HostPolyMesh = ImathPolyMesh<std_host_vector>;
 
 
 void testVecCUDA(
