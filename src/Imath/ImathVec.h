@@ -78,21 +78,21 @@ public:
     IMATH_HOSTDEVICE constexpr Vec2 (T a, T b) IMATH_NOEXCEPT;
 
     /// Copy constructor
-    IMATH_HOSTDEVICE constexpr Vec2 (const Vec2& v) IMATH_NOEXCEPT = default;
+    constexpr Vec2 (const Vec2& v) IMATH_NOEXCEPT = default;
 
     /// Move constructor
-    IMATH_HOSTDEVICE constexpr Vec2 (Vec2&& v) IMATH_NOEXCEPT = default;
+    constexpr Vec2 (Vec2&& v) IMATH_NOEXCEPT = default;
 
     /// Construct from Vec2 of another base type
     template <class S>
     IMATH_HOSTDEVICE constexpr Vec2 (const Vec2<S>& v) IMATH_NOEXCEPT;
 
     /// Copy assignment
-    IMATH_HOSTDEVICE IMATH_CONSTEXPR14 Vec2&
+    IMATH_CONSTEXPR14 Vec2&
     operator= (const Vec2& v) IMATH_NOEXCEPT = default;
 
     /// Move assignment
-    IMATH_HOSTDEVICE IMATH_CONSTEXPR14 Vec2&
+    IMATH_CONSTEXPR14 Vec2&
     operator= (Vec2&& v) IMATH_NOEXCEPT = default;
 
     /// Destructor
@@ -382,10 +382,10 @@ public:
     IMATH_HOSTDEVICE constexpr Vec3 (T a, T b, T c) IMATH_NOEXCEPT;
 
     /// Copy constructor
-    IMATH_HOSTDEVICE constexpr Vec3 (const Vec3& v) IMATH_NOEXCEPT = default;
+    constexpr Vec3 (const Vec3& v) IMATH_NOEXCEPT = default;
 
     /// Move constructor
-    IMATH_HOSTDEVICE constexpr Vec3 (Vec3&& v) IMATH_NOEXCEPT = default;
+    constexpr Vec3 (Vec3&& v) IMATH_NOEXCEPT = default;
 
     /// Construct from Vec3 of another base type
     template <class S>
@@ -404,11 +404,11 @@ public:
     Vec3 (const Vec4<S>& v, InfException);
 
     /// Copy assignment
-    IMATH_HOSTDEVICE IMATH_CONSTEXPR14 Vec3&
+    IMATH_CONSTEXPR14 Vec3&
     operator= (const Vec3& v) IMATH_NOEXCEPT = default;
 
     /// Move assignment
-    IMATH_HOSTDEVICE IMATH_CONSTEXPR14 Vec3&
+    IMATH_CONSTEXPR14 Vec3&
     operator= (Vec3&& v) IMATH_NOEXCEPT = default;
 
     /// Destructor
@@ -710,10 +710,10 @@ public:
     IMATH_HOSTDEVICE constexpr Vec4 (T a, T b, T c, T d) IMATH_NOEXCEPT;
 
     /// Copy constructor
-    IMATH_HOSTDEVICE constexpr Vec4 (const Vec4& v) IMATH_NOEXCEPT = default;
+    constexpr Vec4 (const Vec4& v) IMATH_NOEXCEPT = default;
 
     /// Move constructor
-    IMATH_HOSTDEVICE constexpr Vec4 (Vec4&& v) IMATH_NOEXCEPT = default;
+    constexpr Vec4 (Vec4&& v) IMATH_NOEXCEPT = default;
 
     /// Construct from Vec4 of another base type
     template <class S>
@@ -724,11 +724,11 @@ public:
     IMATH_HOSTDEVICE explicit constexpr Vec4 (const Vec3<S>& v) IMATH_NOEXCEPT;
 
     /// Copy assignment
-    IMATH_HOSTDEVICE IMATH_CONSTEXPR14 Vec4&
+    IMATH_CONSTEXPR14 Vec4&
     operator= (const Vec4& v) IMATH_NOEXCEPT = default;
 
     /// Move assignment
-    IMATH_HOSTDEVICE IMATH_CONSTEXPR14 Vec4&
+    IMATH_CONSTEXPR14 Vec4&
     operator= (Vec4&& v) IMATH_NOEXCEPT = default;
 
     /// Destructor
